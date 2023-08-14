@@ -1,0 +1,52 @@
+#!/bin/bash
+
+
+# set directories
+condorDir="/gpfs/mnt/gpfs02/eic/pingwong/delphes_EIC2/condorScript"
+runScript="/gpfs/mnt/gpfs02/eic/pingwong/delphes_EIC2/runScript/test.sh"
+tag="test"
+
+# directories for condor scripts and logs
+condorLog="/gpfs/mnt/gpfs02/eic/pingwong/delphes_EIC2/condorLog"
+jobDir=${condorLog}/job
+outDir=${condorLog}/out
+errDir=${condorLog}/err
+logDir=${condorLog}/log
+
+i=0
+while [ ${i} -lt 3 ]
+do
+    # set job name and log files
+    jobName=${tag}_${i}
+    job=${jobDir}/${jobName}.job
+    outFile=${outDir}/${jobName}.out
+    errFile=${errDir}/${jobName}.err
+    logFile=${logDir}/${jobName}.log
+
+    rm -f ${job}
+    rm -f ${outFile}
+    rm -f ${errFile}
+    rm -f ${logFile}
+
+    echo job=${job}
+
+    # write job
+    echo "universe = vanilla" > ${job}
+    echo "executable = "${runScript} >> ${job}
+    echo "arguments = "${tag} ${i} >> ${job}
+    echo "job = "${jobDir}/
+    echo "output = "${outFile} >> ${job}
+    echo "log = "${logFile} >> ${job}
+    echo "error = "${errFile} >> ${job}
+    echo "+JobFlavour = \"lunch\"" >> ${job}  #max 1-hour long job
+    echo "queue" >> ${job}
+
+    condor_submit ${job}
+    ((i=i+1))
+done
+
+echo -------------------------------------
+echo done
+
+
+
