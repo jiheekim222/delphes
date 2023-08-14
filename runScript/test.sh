@@ -14,9 +14,9 @@ setenv EIC_LEVEL EIC2022a
 source /cvmfs/eic.opensciencegrid.org/gcc-8.3/MCEG/releases/etc/eic_cshrc.csh
 setenv HAS_PYTHIA8 true
 
-setenv PYTHIA8 "/cvmfs/eic.opensciencegrid.org/gcc-8.3/MCEG/releases/env/EIC2022a"
-echo PYTHIA8: $PYTHIA8
-
+#setenv PYTHIA8 "/cvmfs/eic.opensciencegrid.org/gcc-8.3/MCEG/releases/env/EIC2022a"
+#echo PYTHIA8: $PYTHIA8
+#echo $LD_LIBRARY_PATH
 #--------------------------------------------------------------------#
 # Setting up paths
 #--------------------------------------------------------------------#

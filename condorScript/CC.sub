@@ -32,6 +32,8 @@ do
 
     # write job
     echo "universe = vanilla" > ${job}
+    #echo "export LD_LIBRARY_PATH_STORED = "${LD_LIBRARY_PATH} >> ${job}
+    echo "getenv = True" >> ${job}
     echo "executable = "${runScript} >> ${job}
     echo "arguments = "${tag} ${i} >> ${job}
     echo "job = "${jobDir}/
