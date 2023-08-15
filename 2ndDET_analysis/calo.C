@@ -78,9 +78,13 @@ void calo(const char *inputFile)
 
   TH2* hTowerEtaPhi = new TH2D("hTowerEtaPhi",";#eta; #phi [rad]",100,-5.,5.,100,-3.14,3.14);
   TH2* hTowerEtaE = new TH2D("hTowerEtaE",";#eta; E [GeV]",100,-5.,5.,100,0.,200.);
+  
+  TH1* hTowerDeltaE = new TH1D("hTowerDeltaE",";(E^{rec}-E^{gen})/E^{gen};Number of towers", 100, -1.0, 1.0);
+  TH1* hTowerDeltaEem = new TH1D("hTowerDeltaEem",";(Eem^{rec}-Eem^{gen})/Eem^{gen};Number of towers", 100, -1.0, 1.0);
+  TH1* hTowerDeltaEhad = new TH1D("hTowerDeltaEhad",";(Ehad^{rec}-Ehad^{gen})/Ehad^{gen};Number of towers", 100, -1.0, 1.0);
 
   Long64_t entry;
-  Int_t i, j, k;
+  Int_t i, j, k, m;
 
   // Loop over all events
   for(entry = 0; entry < allEntries; ++entry)
@@ -110,12 +114,27 @@ void calo(const char *inputFile)
       hPhotonDeltaE->Fill((photon->E - particle->E)/particle->E);                                         
     }
     // Loop over all tower in event
+    /*
     for(k = 0; k < branchTower->GetEntriesFast(); ++k)
     {
       tower = (Tower*) branchTower->At(k);
       hTowerEtaPhi->Fill(tower->Eta,tower->Phi);
       hTowerEtaE->Fill(tower->Eta,tower->E);
+      cout << "entry: " << entry << "tower: " << branchTower->GetEntriesFast() << "Gen part: " << tower->Particles.GetEntriesFast() << endl;
+      //particle = (GenParticle*) tower->Particles.At(k);
+      particle = (GenParticle*) tower->Particles.At(m);
+      cout << "PID: " << particle->PID << endl; 
+      //for(m = 0; m < tower->Particles.GetEntriesFast(); ++m)
+      //{
+        //particle = (GenParticle*) tower->Particles.At(m);
+        //cout << "PID: " << particle->PID << endl; 
+      //} 
+        //hTowerDeltaE->Fill((tower->E - particle->E)/particle->E);
+        //hTowerDeltaEem->Fill((tower->Eem - particle->E)/particle->E);
+        //hTowerDeltaEhad->Fill((tower->Ehad - particle->E)/particle->E);
     }
+    */
+    if (entry > 10) break;
   }
 
   // Plot figures
@@ -185,6 +204,39 @@ void calo(const char *inputFile)
   hTowerEtaE->GetYaxis()->CenterTitle(true);
   hTowerEtaE->Draw("COLZ");
   cnv7->SaveAs("./plots/hTowerEtaE.png");
+
+  TCanvas *cnv8 = new TCanvas("cnv8", "cnv8");
+  hTowerDeltaE->GetXaxis()->CenterTitle(true);
+  hTowerDeltaE->GetYaxis()->CenterTitle(true);
+  hTowerDeltaE->SetLineWidth(2);
+  hTowerDeltaE->Fit("gaus");
+  TF1 *gaus_hTowerDeltaE = hTowerDeltaE->GetFunction("gaus");
+  gaus_hTowerDeltaE->SetLineWidth(2);
+  gaus_hTowerDeltaE->SetLineColor(kRed);
+  hTowerDeltaE->Draw();
+  cnv8->SaveAs("./plots/hTowerDeltaE.png");
+
+  TCanvas *cnv9 = new TCanvas("cnv9", "cnv9");
+  hTowerDeltaEem->GetXaxis()->CenterTitle(true);
+  hTowerDeltaEem->GetYaxis()->CenterTitle(true);
+  hTowerDeltaEem->SetLineWidth(2);
+  hTowerDeltaEem->Fit("gaus");
+  TF1 *gaus_hTowerDeltaEem = hTowerDeltaEem->GetFunction("gaus");
+  gaus_hTowerDeltaEem->SetLineWidth(2);
+  gaus_hTowerDeltaEem->SetLineColor(kRed);
+  hTowerDeltaEem->Draw();
+  cnv9->SaveAs("./plots/hTowerDeltaEem.png");
+
+  TCanvas *cnv10 = new TCanvas("cnv10", "cnv10");
+  hTowerDeltaEhad->GetXaxis()->CenterTitle(true);
+  hTowerDeltaEhad->GetYaxis()->CenterTitle(true);
+  hTowerDeltaEhad->SetLineWidth(2);
+  hTowerDeltaEhad->Fit("gaus");
+  TF1 *gaus_hTowerDeltaEhad = hTowerDeltaEhad->GetFunction("gaus");
+  gaus_hTowerDeltaEhad->SetLineWidth(2);
+  gaus_hTowerDeltaEhad->SetLineColor(kRed);
+  hTowerDeltaEhad->Draw();
+  cnv10->SaveAs("./plots/hTowerDeltaEhad.png");
 
   cout << "** Done..." << endl;
 
