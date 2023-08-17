@@ -32,3 +32,5 @@ Pythia8Dict_rdict.pcm
 libDelphesDisplay.so
 *.root
 *.png
+*.pdf
+*.hepmc

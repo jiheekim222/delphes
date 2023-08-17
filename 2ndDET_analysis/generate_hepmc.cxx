@@ -21,7 +21,7 @@ void generate_hepmc(int n_events = 1e3, double pdgid = 11., double e_start = 5.0
   GenEvent evt(Units::GEV, Units::MM);
 
   // Particles [pdgid, mass in GeV]
-  double particles[11][2] = {
+  double particles[13][2] = {
     {11.,   0.51099895e-3}, // electron  
     {2212., 0.938272}, // proton
     {22.,   0.0}, // photon
@@ -32,7 +32,9 @@ void generate_hepmc(int n_events = 1e3, double pdgid = 11., double e_start = 5.0
     {-211,  0.13957039}, // pion-
     {311,   0.497611}, // kaon0
     {321,   0.493677}, // kaon+
-    {-321,  0.493677} // kaon- 
+    {-321,  0.493677}, // kaon-
+    {130,   0.497611}, // kaon0 long
+    {310,   0.497611}  // kaon0 short 
   };
 
   // Look for mass of desired particle
