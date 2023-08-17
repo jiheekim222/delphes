@@ -454,9 +454,9 @@ module SimpleCalorimeter ECal {
 
   # Refer to ePIC ECal resolution (presented at Hard Probes 2023)
   # https://wiki.bnl.gov/EPIC/index.php?title=File:ECalResolution_electron_Fitted.pdf
-  set ResolutionFormula {          (eta <= -1.5 && eta > -3.5)                         * sqrt(energy^2*0.012^2 + energy*0.019^2 )+ \
-				   (eta <=  1.5 && eta > -1.5)                        * sqrt(energy^2*0.001^2 + energy*0.049^2 )+ \
-				   (eta <=  3.5 && eta >  1.5)                         * sqrt(energy^2*0.032^2 + energy*0.106^2 )}
+  set ResolutionFormula {          (eta <= -1.5 && eta > -3.5)                         * sqrt((0.012)^2 + energy*0.019^2 )+ \
+				   (eta <=  1.5 && eta > -1.5)                        * sqrt((0.001)^2 + energy*0.049^2 )+ \
+				   (eta <=  3.5 && eta >  1.5)                         * sqrt((0.032)^2 + energy*0.106^2 )}
 
 }
 
@@ -526,8 +526,8 @@ module SimpleCalorimeter HCal {
   # Refer to ePIC HCal resolution (presented at Hard Probes 2023)
   # https://wiki.bnl.gov/EPIC/index.php?title=File:HCalResolution_SinglePion.pdf
   # set HCalResolutionFormula {resolution formula as a function of eta and energy}
-  set ResolutionFormula {    (eta <= 1.0 && eta > -1.0)                       * sqrt(energy^2*0.145^2 + energy*0.75^2)+
-                             (eta <= 4.0 && eta >  1.0)                       * sqrt(energy^2*0.055^2 + energy*0.443^2)
+  set ResolutionFormula {    (eta <= 1.0 && eta > -1.0)                       * sqrt((0.145)^2 + energy*0.75^2)+
+                             (eta <= 4.0 && eta >  1.0)                       * sqrt((0.055)^2 + energy*0.443^2)
   }
 
 }
