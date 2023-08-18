@@ -21,20 +21,22 @@ void generate_hepmc(int n_events = 1e3, double pdgid = 11., double e_start = 5.0
   GenEvent evt(Units::GEV, Units::MM);
 
   // Particles [pdgid, mass in GeV]
-  double particles[13][2] = {
+  double particles[15][2] = {
     {11.,   0.51099895e-3}, // electron  
+    {13.,   0.1056583745}, // muon-  
+    {-13.,  0.1056583745}, // muon+  
     {2212., 0.938272}, // proton
     {22.,   0.0}, // photon
     {-11.,  0.51099895e-3}, // positron
     {2112., 0.939565}, // neutron
     {111.,  0.1349768}, // pion0
-    {211,   0.13957039}, // pion+
-    {-211,  0.13957039}, // pion-
-    {311,   0.497611}, // kaon0
-    {321,   0.493677}, // kaon+
-    {-321,  0.493677}, // kaon-
-    {130,   0.497611}, // kaon0 long
-    {310,   0.497611}  // kaon0 short 
+    {211.,  0.13957039}, // pion+
+    {-211., 0.13957039}, // pion-
+    {311.,  0.497611}, // kaon0
+    {321.,  0.493677}, // kaon+
+    {-321., 0.493677}, // kaon-
+    {130.,  0.497611}, // kaon0 long
+    {310.,  0.497611}  // kaon0 short 
   };
 
   // Look for mass of desired particle
@@ -49,6 +51,9 @@ void generate_hepmc(int n_events = 1e3, double pdgid = 11., double e_start = 5.0
   TRandom* r1 = new TRandom();
 
   // Constraining the solid angle, but larger than that subtended by the detector
+  // Backward ECAL: 155 < theta_angle < 177 (-3.6 < eta < -1.5) 
+  // Barrel ECAL:
+  // Forward ECAL: 
   double cos_theta_min = std::cos(M_PI * (45.0 / 180.0));
   double cos_theta_max = std::cos(M_PI * (135.0 / 180.0));
 
