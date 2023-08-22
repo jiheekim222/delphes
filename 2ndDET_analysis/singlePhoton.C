@@ -42,6 +42,8 @@ struct TestPlots
 
   TH1 *fPhotonEta;
   TH1 *fParticleEta;
+  TH1 *fParticleE[nEtaBin];
+
 };
 
 //------------------------------------------------------------------------------
@@ -59,18 +61,33 @@ void BookHistograms(ExRootResult *result, TestPlots *plots)
 			"#eta^{gen} - #eta^{rec}", "number of photons",
 			//"(#eta^{particle} - #eta^{photon})/#eta^{particle}", "number of photons",
 			100, -0.25, 0.25);
-    
+    plots->fPhotonDeltaEta[i]->Sumw2();
+
     for (j=0;j<nEBin;j++) {
       plots->fPhotonDeltaE[i][j] = 
 	result->AddHist1D(Form("photon_delta_energy_eta%dE%d",i,j),
 			  Form("%.1f #leq #eta < %.1f, %.0f - %.0f GeV",eta[i],eta[i+1],E[j],E[j+1]),
 			  "(E^{gen} - E^{rec})/E^{gen}", "number of photons",
 			  100, -0.2, 0.2);
+
+      plots->fPhotonDeltaE[i][j]->Sumw2();
     }
   }
 
-  plots->fPhotonEta = result->AddHist1D("hPhotonEta","photon",";#eta_{rec};","",88, -1.1, 1.1);
-  plots->fParticleEta = result->AddHist1D("hParticleEta","particle",";#eta_{gen};","",88,-1.1,1.1);
+  plots->fPhotonEta = result->AddHist1D("hPhotonEta","photon","#eta_{rec}","",88, -1.1, 1.1);
+  plots->fPhotonEta->Sumw2();
+
+  plots->fParticleEta = result->AddHist1D("hParticleEta","particle","#eta_{gen}","",88,-1.1,1.1);
+  plots->fParticleEta->Sumw2();
+
+  for (i=0;i<nEtaBin;i++) {
+    plots->fParticleE[i] = result->AddHist1D(Form("hParticleE_eta%d",i),
+					     Form("%.1f #leq #eta < %.1f",eta[i],eta[i+1]),
+					     "E_{gen}",
+					     "",
+					     75,4,11);
+    plots->fParticleE[i]->Sumw2();
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -78,6 +95,7 @@ void BookHistograms(ExRootResult *result, TestPlots *plots)
 void AnalyseEvents(ExRootTreeReader *treeReader, TestPlots *plots)
 {
   TClonesArray *branchParticle = treeReader->UseBranch("Particle");
+  //TClonesArray *branchPhoton = treeReader->UseBranch("Tower");
   TClonesArray *branchPhoton = treeReader->UseBranch("Photon");
   TClonesArray *branchEFlowPhoton = treeReader->UseBranch("EFlowPhoton");
 
@@ -87,6 +105,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, TestPlots *plots)
 
   GenParticle *particle, *myPart1, *myPart2;
   Photon *photon;
+  //Tower* photon;
 
   Track *track;
   Tower *tower;
@@ -109,13 +128,13 @@ void AnalyseEvents(ExRootTreeReader *treeReader, TestPlots *plots)
     // Load selected branches with data from specified event
     treeReader->ReadEntry(entry);
   
-    photon = (Photon*) branchPhoton->At(0);
-    
     for(i = 0; i < branchPhoton->GetEntriesFast(); ++i)
     {
       photon = (Photon*) branchPhoton->At(i);
+      //photon = (Tower*) branchPhoton->At(i); 
+
       // skip photons with references to multiple particles
-      if(photon->Particles.GetEntriesFast() != 1) continue;
+      //if(photon->Particles.GetEntriesFast() != 1) continue;
       
       particle = (GenParticle*) photon->Particles.At(0);
       if (!particle) continue;
@@ -127,7 +146,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, TestPlots *plots)
       
       plots->fPhotonEta->Fill(photon->Eta);
       plots->fParticleEta->Fill(particle->Eta);
-      
+      plots->fParticleE[iEta]->Fill(particle->E);
       /*
 	if (fabs((particle->Eta - photon->Eta)/particle->Eta) >0.1) {
 	cout<<"gen eta = "<<particle->Eta<<", rec eta="<<photon->Eta
@@ -138,7 +157,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, TestPlots *plots)
     
       plots->fPhotonDeltaEta[iEta]->Fill((particle->Eta - photon->Eta));///particle->Eta);
       plots->fPhotonDeltaE[iEta][iE]->Fill((particle->E - photon->E)/particle->E);
-
+      //plots->fPhotonDeltaE[iEta][iE]->Fill((particle->E - photon->Eem)/particle->E);
       // cout << "--  New event -- " << endl;
     }
   }
